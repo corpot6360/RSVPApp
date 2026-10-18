@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="RSVPApp.MainPage">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="30,40" Spacing="18">
+            <Label Text="RSVP App" FontSize="28" HorizontalOptions="Center" TextColor="{StaticResource Primary}" />
+
+            <Entry x:Name="UsernameEntry" Placeholder="Username" />
+            <Entry x:Name="PasswordEntry" Placeholder="Password" IsPassword="True" />
+
+            <Button Text="Log In" Clicked="OnLoginClicked" />
+            <Button Text="Continue as Guest" Clicked="OnGuestClicked" BackgroundColor="{StaticResource Secondary}" TextColor="{StaticResource Primary}" />
+
+            <HorizontalStackLayout HorizontalOptions="Center" Spacing="12">
+                <Button Text="Add User" Clicked="OnAddUserClicked" />
+                <Button Text="View Events" Clicked="OnViewEventsClicked" />
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

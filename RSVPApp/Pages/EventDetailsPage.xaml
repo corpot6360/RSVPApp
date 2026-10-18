@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="RSVPApp.Pages.EventDetailsPage"
+             Title="Event Details">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="12">
+            <Label x:Name="TitleLabel" FontSize="20" FontAttributes="Bold" TextColor="{StaticResource Primary}" />
+            <Label x:Name="DateLabel" FontSize="14" />
+            <Label x:Name="HostLabel" FontSize="14" />
+            <Label Text="Description" FontAttributes="Bold" />
+            <Label x:Name="DescriptionLabel" />
+
+            <HorizontalStackLayout Spacing="12">
+                <Button Text="RSVP" Clicked="OnRsvpClicked" />
+                <Button Text="Back" Clicked="OnBackClicked" BackgroundColor="{StaticResource Secondary}" TextColor="{StaticResource Primary}" />
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
