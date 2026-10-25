@@ -1,5 +1,7 @@
 using System;
 using Microsoft.Maui.Controls;
+using RSVPApp.Data;
+using RSVPApp.Models;
 
 namespace RSVPApp.Pages
 {

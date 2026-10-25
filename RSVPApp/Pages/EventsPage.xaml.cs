@@ -2,58 +2,83 @@ using System;
 using System.Linq;
 using Microsoft.Maui.Controls;
 using RSVPApp.Data;
+using RSVPApp.Models;
 
 namespace RSVPApp.Pages
 {
     public partial class EventsPage : ContentPage
     {
+        private class EventListItem
+        {
+            public int Id { get; set; }
+            public string Title { get; set; } = string.Empty;
+            public string Date { get; set; } = string.Empty;
+        }
+
         public EventsPage()
         {
             InitializeComponent();
-            LoadAll();
         }
 
-        private void LoadAll()
+        protected override async void OnAppearing()
         {
-            EventsCollection.ItemsSource = DataStore.GetAllEvents().Select(e => new { e.Id, e.Title, Date = e.Date.ToString("g") });
+            base.OnAppearing();
+            await LoadAllAsync();
         }
 
-        private void LoadAttending()
+        private static EventListItem ToListItem(Event e)
+        {
+            return new EventListItem
+            {
+                Id = e.Id,
+                Title = e.Title,
+                Date = e.Date.ToString("g")
+            };
+        }
+
+        private async Task LoadAllAsync()
+        {
+            var events = await DataStore.GetAllEventsAsync();
+            EventsCollection.ItemsSource = events.Select(ToListItem).ToList();
+        }
+
+        private async Task LoadAttendingAsync()
         {
             var user = DataStore.CurrentUser;
-            if (user == null)
+            if (user == null || user.IsGuest)
             {
                 EventsCollection.ItemsSource = Array.Empty<object>();
                 return;
             }
-            EventsCollection.ItemsSource = DataStore.GetEventsAttending(user.Username).Select(e => new { e.Id, e.Title, Date = e.Date.ToString("g") });
+
+            var events = await DataStore.GetEventsAttendingAsync(user.Id);
+            EventsCollection.ItemsSource = events.Select(ToListItem).ToList();
         }
 
-        private void LoadHosting()
+        private async Task LoadHostingAsync()
         {
             var user = DataStore.CurrentUser;
-            if (user == null)
+            if (user == null || user.IsGuest)
             {
                 EventsCollection.ItemsSource = Array.Empty<object>();
                 return;
             }
-            EventsCollection.ItemsSource = DataStore.GetEventsHosting(user.Username).Select(e => new { e.Id, e.Title, Date = e.Date.ToString("g") });
+
+            var events = await DataStore.GetEventsHostingAsync(user.Id);
+            EventsCollection.ItemsSource = events.Select(ToListItem).ToList();
         }
 
-        private void OnAllClicked(object sender, EventArgs e) => LoadAll();
-        private void OnAttendingClicked(object sender, EventArgs e) => LoadAttending();
-        private void OnHostingClicked(object sender, EventArgs e) => LoadHosting();
+        private async void OnAllClicked(object sender, EventArgs e) => await LoadAllAsync();
+        private async void OnAttendingClicked(object sender, EventArgs e) => await LoadAttendingAsync();
+        private async void OnHostingClicked(object sender, EventArgs e) => await LoadHostingAsync();
 
         private async void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.CurrentSelection != null && e.CurrentSelection.Count > 0)
             {
-                var item = e.CurrentSelection[0];
-                var idProp = item.GetType().GetProperty("Id");
-                var id = idProp?.GetValue(item)?.ToString();
-                if (!string.IsNullOrEmpty(id))
+                if (e.CurrentSelection[0] is EventListItem item)
                 {
-                    await Shell.Current.GoToAsync($"eventdetails?eventId={id}");
+                    await Shell.Current.GoToAsync($"eventdetails?eventId={item.Id}");
                 }
                 EventsCollection.SelectedItem = null;
             }

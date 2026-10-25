@@ -7,6 +7,12 @@
             InitializeComponent();
         }
 
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+            await Data.DataStore.InitializeAsync();
+        }
+
         private async void OnLoginClicked(object sender, EventArgs e)
         {
             var username = UsernameEntry.Text?.Trim() ?? string.Empty;
@@ -18,10 +24,10 @@
                 return;
             }
 
-            if (Data.DataStore.ValidateCredentials(username, password))
+            var user = await Data.DataStore.ValidateCredentialsAsync(username, password);
+            if (user != null)
             {
-                // sign in with some basic info (student-level app)
-                Data.DataStore.SignIn(username, "Student User", username + "@school.edu");
+                Data.DataStore.SignIn(user);
                 await Shell.Current.GoToAsync("events");
             }
             else

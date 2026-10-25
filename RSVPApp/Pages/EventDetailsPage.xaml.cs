@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using Microsoft.Maui.Controls;
 using RSVPApp.Data;
 
@@ -26,7 +25,10 @@ namespace RSVPApp.Pages
             if (string.IsNullOrEmpty(EventId))
                 return;
 
-            var ev = DataStore.GetAllEvents().FirstOrDefault(e => e.Id == EventId);
+            if (!int.TryParse(EventId, out var eventId))
+                return;
+
+            var ev = DataStore.GetEventByIdAsync(eventId).GetAwaiter().GetResult();
             if (ev == null)
                 return;
 

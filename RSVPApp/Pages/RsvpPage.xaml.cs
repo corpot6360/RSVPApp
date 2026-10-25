@@ -1,7 +1,7 @@
 using System;
-using System.Linq;
 using Microsoft.Maui.Controls;
 using RSVPApp.Data;
+using RSVPApp.Models;
 
 namespace RSVPApp.Pages
 {
@@ -18,16 +18,19 @@ namespace RSVPApp.Pages
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            LoadEvent();
+            LoadEventAsync();
             PrepopulateIfLoggedIn();
         }
 
-        private void LoadEvent()
+        private async void LoadEventAsync()
         {
             if (string.IsNullOrEmpty(EventId))
                 return;
 
-            var ev = DataStore.GetAllEvents().FirstOrDefault(e => e.Id == EventId);
+            if (!int.TryParse(EventId, out var eventId))
+                return;
+
+            var ev = await DataStore.GetEventByIdAsync(eventId);
             if (ev != null)
             {
                 EventTitleLabel.Text = ev.Title;

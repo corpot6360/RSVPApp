@@ -39,7 +39,19 @@ namespace RSVPApp.Pages
                 return;
             }
 
-            await DisplayAlert("Success", "User added.", "OK");
+            var created = await DataStore.AddUserAsync(
+                UsernameEntry.Text!.Trim(),
+                pwd,
+                FullNameEntry.Text!.Trim(),
+                EmailEntry.Text!.Trim());
+
+            if (!created)
+            {
+                await DisplayAlert("Validation", "That username already exists.", "OK");
+                return;
+            }
+
+            await DisplayAlert("Success", "User account created.", "OK");
             await Shell.Current.GoToAsync("..");
         }
     }

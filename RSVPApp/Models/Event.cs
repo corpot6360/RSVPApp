@@ -1,15 +1,17 @@
 using System;
-using System.Collections.Generic;
+using SQLite;
 
 namespace RSVPApp.Models
 {
     public class Event
     {
-        public string Id { get; set; } = Guid.NewGuid().ToString();
+        [PrimaryKey, AutoIncrement]
+        public int Id { get; set; }
+
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public DateTime Date { get; set; } = DateTime.Now;
+        public int HostUserId { get; set; }
         public string HostUsername { get; set; } = string.Empty;
-        public List<string> Attendees { get; set; } = new List<string>();
     }
 }
